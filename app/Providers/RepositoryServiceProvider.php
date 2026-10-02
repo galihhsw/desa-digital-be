@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Interfaces\AuthRepositoryInterface;
+use App\Interfaces\DashboardRepositoryInterface;
 use App\Interfaces\DevelopmentApplicantRepositoryInterface;
 use App\Repositories\DevelopmentRepository;
 use App\Interfaces\DevelopmentRepositoryInterface;
@@ -19,6 +20,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Repositories\UserRepository;
 use App\Interfaces\UserRepositoryInterface;
 use App\Repositories\AuthRepository;
+use App\Repositories\DashboardRepository;
 use App\repositories\DevelopmentApplicantRepository;
 use App\Repositories\EventParticipantRepository;
 use App\Repositories\EventRepository;
@@ -54,6 +56,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProfileRepositoryInterface::class, ProfileRepository::class);
 
         $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
+
+        $this->app->bind(DashboardRepositoryInterface::class, DashboardRepository::class);
     }
 
     /**
