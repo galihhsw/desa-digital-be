@@ -1,0 +1,47 @@
+*.log
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.backup
+.env.production
+.env.*
+!.env.example
+
+# Databases
+*.sqlite
+*.sqlite-journal
+/database/*.sqlite
+/database/*.sqlite-journal
+
+# Editor & IDE files
+.phpactor.json
+/.codex
+/.cursor/
+/.idea
+/.nova
+/.vscode
+/.zed
+_ide_helper.php
+Homestead.json
+Homestead.yaml
+
+# Testing & Cache
+.phpunit.result.cache
+/.phpunit.cache
+
+# Dependencies & Auth
+/auth.json
+/node_modules
+/vendor
+
+# Build Assets
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+
+# Storage keys
+/storage/*.key
+/storage/pail
