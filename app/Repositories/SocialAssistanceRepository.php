@@ -19,7 +19,7 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
                 // if $search --> will search by defined column in  model
                 $query->search($search);
             }
-        });
+        })->with('socialAssistanceRecipients');
 
         $query->orderBy('created_at', 'desc');
         
@@ -55,7 +55,7 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
     public function getById(
         string $id
     ){
-        $query = SocialAssistance::where('id', $id);
+        $query = SocialAssistance::where('id', $id)->with('socialAssistanceRecipients');
         
         return $query->first();   
     }

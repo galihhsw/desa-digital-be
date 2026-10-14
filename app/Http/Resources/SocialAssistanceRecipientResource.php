@@ -27,6 +27,7 @@ class SocialAssistanceRecipientResource extends JsonResource
             'account_number' => $this->account_number,
             'proof' => $this->proof,
             'status' => $this->status,
+            'created_at' => $this->created_at
 
         ];
     }

@@ -16,13 +16,14 @@ class SocialAssistanceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'thumbnail' => $this->thumbnail,
+            'thumbnail' => asset('storage/'. $this->thumbnail),
             'name' => $this->name,
             'category' => $this->category,
             'amount' => $this->amount,
             'provider' => $this->provider,
             'description' => $this->description,
             'is_available' => $this->is_available,
+            'social_assistance_recipients' => SocialAssistanceRecipientResource::collection($this->whenLoaded('socialAssistanceRecipients'))
 
         ];
     }
