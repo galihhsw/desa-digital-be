@@ -19,7 +19,7 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
                 // if $search --> will search by defined column in  model
                 $query->search($search);
             }
-        });
+        })->with('developmentApplicants');
 
         $query->orderBy('created_at', 'desc'); 
         
@@ -53,7 +53,7 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
     public function getById(
         string $id
     ){
-        $query = Development::where('id', $id);
+        $query = Development::where('id', $id)->with('developmentApplicants');
         
         return $query->first();   
     }

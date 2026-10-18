@@ -76,11 +76,15 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
             $socialAssistanceRecipient->account_number = $data['account_number'];
 
             if(isset($data['proof'])) {
-                $socialAssistanceRecipient->proof = $data['proof'];
+                if ($data['proof'] instanceof \Illuminate\Http\UploadedFile) {
+                    $socialAssistanceRecipient->proof = $data['proof']->store('assets/social-assistance-recipient', 'public');
+                } else {
+                    $socialAssistanceRecipient->proof = $data['proof'];
+                }
             }
 
             if(isset($data['status'])) {
-                $socialAssistanceRecipient->proof = $data['status'];
+                $socialAssistanceRecipient->status = $data['status'];
             }
 
             $socialAssistanceRecipient->save();
@@ -112,11 +116,15 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
             $socialAssistanceRecipient->account_number = $data['account_number'];
 
             if(isset($data['proof'])) {
-                $socialAssistanceRecipient->proof = $data['proof'];
+                if ($data['proof'] instanceof \Illuminate\Http\UploadedFile) {
+                    $socialAssistanceRecipient->proof = $data['proof']->store('assets/social-assistance-recipient', 'public');
+                } else {
+                    $socialAssistanceRecipient->proof = $data['proof'];
+                }
             }
 
             if(isset($data['status'])) {
-                $socialAssistanceRecipient->proof = $data['status'];
+                $socialAssistanceRecipient->status = $data['status'];
             }
 
             $socialAssistanceRecipient->save();

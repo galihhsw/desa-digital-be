@@ -13,7 +13,7 @@ class EventUpdateRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
    public function rules(): array
-    {
+    { 
         return [
             'thumbnail' => 'nullable|image|mimes:png,jpg|max:2048',
             'name' => 'required|string|max:255',

@@ -19,7 +19,7 @@ class EventRepository implements EventRepositoryInterface
                 // if $search --> will search by defined column in  model
                 $query->search($search);
             }
-        });
+        })->with('eventParticipants');
 
         $query->orderBy('created_at', 'desc'); 
         
@@ -53,7 +53,7 @@ class EventRepository implements EventRepositoryInterface
     public function getById(
         string $id
     ){
-        $query = Event::where('id', $id);
+        $query = Event::where('id', $id)->with('eventParticipants');
         
         return $query->first();   
     }

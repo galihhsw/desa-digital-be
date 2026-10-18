@@ -16,7 +16,7 @@ class DevelopmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'thumbnail' => $this->thumbnail,
+            'thumbnail' => asset('storage/' . $this->thumbnail),
             'name' => $this->name,
             'description' => $this->description,
             'person_in_charge' => $this->person_in_charge,
@@ -24,6 +24,7 @@ class DevelopmentResource extends JsonResource
             'end_date' => $this->end_date,
             'amount' => (float)(string) $this->amount,
             'status' => $this->status,
+            'development_applicants' => DevelopmentApplicantResource::collection($this->whenLoaded('developmentApplicants')) 
         ];
     }
 }
