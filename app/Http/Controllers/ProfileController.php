@@ -25,7 +25,7 @@ class ProfileController extends Controller
             
 
             if (!$profile) {
-                return ResponseHelper::jsonResponse(false, 'Profile data not found', null, 404);
+                return ResponseHelper::jsonResponse(false, 'Profile data not found', null, 200);
             }
 
             return ResponseHelper::jsonResponse(true, 'Profile data retrieved successfully', new ProfileResource($profile), 200);

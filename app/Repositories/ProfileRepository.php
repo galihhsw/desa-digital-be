@@ -29,15 +29,16 @@ class ProfileRepository implements ProfileRepositoryInterface
             $profile->agricultural_area = $data['agricultural_area'];
             $profile->total_area = $data['total_area'];
 
+            $profile->save(); 
+
             if(array_key_exists('images', $data)){
                 foreach ($data['images'] as $image) {
                     $profile->profileImages()->create([
-                        'images' => $image->store('assets/profiles', 'public')
+                        'image' => $image->store('assets/profiles', 'public')
                     ]);
                 }
             }
-     
-            $profile->save(); 
+      
             DB::commit();
             return $profile;
 
@@ -68,7 +69,7 @@ class ProfileRepository implements ProfileRepositoryInterface
             if(array_key_exists('images', $data)){
                 foreach ($data['images'] as $image) {
                     $profile->profileImages()->create([
-                        'images' => $image->store('assets/profiles', 'public')
+                        'image' => $image->store('assets/profiles', 'public')
                     ]);
                 }
             }
