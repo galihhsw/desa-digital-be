@@ -21,9 +21,9 @@ public function rules(): array
             'password' => 'required|string|min:8',
             'head_of_family_id' => 'required|exists:head_of_families,id',
 
-            'profile_picture' => 'required|image|mimes:jpeg, png, jpg|max:2048',
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'identity_number' => 'required|integer',
-            'gender' => 'required|string|in:male, female',
+            'gender' => 'required|string|in:male,female',
             'date_of_birth'=> 'required|date',
             'phone_number' => 'required|string',
             'occupation' => 'required|string',

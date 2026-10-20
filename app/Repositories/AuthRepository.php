@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Helpers\ResponseHelper;
+use App\Http\Resources\HeadOfFamilyResource;
 use App\Interfaces\AuthRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,6 +64,7 @@ class AuthRepository implements AuthRepositoryInterface
                     'email' => $user->email,
                     'permissions' => $permissions,
                     'role' => $role,
+                    'head_of_family' => new HeadOfFamilyResource($user->headOfFamily)
                 ],
             ]);
         }
