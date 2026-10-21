@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 class EventParticipantRepository implements EventParticipantRepositoryInterface
 {
     public function getAll(
+        ?string $status,
         ?string $search, 
         ?int $limit, 
         bool $execute
@@ -43,6 +44,7 @@ class EventParticipantRepository implements EventParticipantRepositoryInterface
 
     public function getAllPaginated(
         ?string $search,
+        ?string $status,
         ?int $rowPerPage
     ) {
         // Implementation of the getAllPaginated method
