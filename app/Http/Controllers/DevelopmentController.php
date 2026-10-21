@@ -41,6 +41,7 @@ class DevelopmentController extends Controller implements HasMiddleware
         try{
             $developments = $this->developmentRepository->getAll(
                 $request->search,
+                $request->status,
                 $request->limit,
                 true
             );
@@ -56,12 +57,14 @@ class DevelopmentController extends Controller implements HasMiddleware
     {
         $request = $request->validate([
             'search' => 'nullable|string',
+            'status' => 'nullable|string',
             'row_per_page' => 'required|integer'
         ]);
 
         try{
             $developments = $this->developmentRepository->getAllPaginated(
                 $request['search'] ?? null,
+                $request['status'] ?? null,
                 $request['row_per_page'],
             );
 

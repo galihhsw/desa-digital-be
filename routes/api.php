@@ -8,6 +8,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventParticipantController;
 use App\Http\Controllers\FamilyMemberController;
 use App\Http\Controllers\HeadOfFamilyController;
+use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialAssistanceController;
 use App\Http\Controllers\SocialAssistanceRecipientController;
@@ -68,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/midtrans-callback', [MidtransController::class, 'callback'])->name('midtrans.callback');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout'])->name('logout');

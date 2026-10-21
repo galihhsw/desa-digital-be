@@ -6,12 +6,14 @@ interface EventRepositoryInterface
 {
      public function getAll(
         ?string $search,
+        ?string $status,
         ?int $limit,
         bool $execute
     );
 
     public function getAllPaginated(
         ?string $search,
+        ?string $status,
         ?int $rowPerPage
     );
 

@@ -128,7 +128,7 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
             }
 
             if(isset($data['status'])) {
-                $socialAssistanceRecipient->status = $data['status'];
+                $socialAssistanceRecipient->status = $data['status']->store('assets/social-assistance-recipient', 'public');
             }
 
             $socialAssistanceRecipient->save();

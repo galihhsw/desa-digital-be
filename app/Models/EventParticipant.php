@@ -17,6 +17,7 @@ class EventParticipant extends Model
         'quantity',
         'total_price',
         'payment_status',
+        'snap_token',
     ];
 
     protected $casts = [

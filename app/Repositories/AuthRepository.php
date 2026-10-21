@@ -64,7 +64,7 @@ class AuthRepository implements AuthRepositoryInterface
                     'email' => $user->email,
                     'permissions' => $permissions,
                     'role' => $role,
-                    'head_of_family' => new HeadOfFamilyResource($user->headOfFamily)
+                    'head_of_family' => $user->headOfFamily ? new HeadOfFamilyResource($user->headOfFamily) : null
                 ],
             ]);
         }

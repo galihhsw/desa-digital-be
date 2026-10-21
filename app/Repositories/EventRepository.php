@@ -11,6 +11,7 @@ class EventRepository implements EventRepositoryInterface
 {
     public function getAll(
         ?string $search, 
+        ?string $status, 
         ?int $limit, 
         bool $execute
     ){
@@ -20,6 +21,12 @@ class EventRepository implements EventRepositoryInterface
                 $query->search($search);
             }
         })->with('eventParticipants');
+
+        if ($status === 'joined') {
+            $query->whereHas('eventParticipants', function ($query) {
+                $query->where('head_of_family_id', auth()->user()->headOfFamily->id);
+            });
+        }
 
         $query->orderBy('created_at', 'desc'); 
         
@@ -38,11 +45,13 @@ class EventRepository implements EventRepositoryInterface
 
     public function getAllPaginated(
         ?string $search,
+        ?string $status,
         ?int $rowPerPage
     ) {
         // Implementation of the getAllPaginated method
         $query = $this->getAll(
             $search, 
+            $status,
             $rowPerPage, 
             false
         );

@@ -25,6 +25,7 @@ class EventParticipantResource extends JsonResource
             'total_price' => (float)(string) $this->total_price,
             'payment_status' => $this->payment_status,
             'created_at' => $this->created_at,
+            'snap_token' => $this->snap_token,
         ];
     }
 }

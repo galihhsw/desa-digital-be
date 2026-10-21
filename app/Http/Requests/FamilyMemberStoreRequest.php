@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Override;
 
 class FamilyMemberStoreRequest extends FormRequest
 {
@@ -69,5 +71,15 @@ public function rules(): array
             'unique:users' => ':attribute sudah ada',
             'in' => ':attribute harus berupa salah satu dari :values'
         ];
+    }
+
+    #[Override]
+    public function prepareForValidation()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('head-of-family')) {
+            $this->merge(['head_of_family_id' => $user->headOfFamily->id]);
+        }
     }
 }

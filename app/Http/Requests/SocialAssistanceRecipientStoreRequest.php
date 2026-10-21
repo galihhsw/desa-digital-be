@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class SocialAssistanceRecipientStoreRequest extends FormRequest
 {
@@ -61,6 +62,15 @@ class SocialAssistanceRecipientStoreRequest extends FormRequest
             'unique:users' => ':attribute sudah ada',
             'in' => ':attribute harus berupa salah satu dari :values'
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('head-of-family')) {
+            $this->merge(['head_of_family_id' => $user->headOfFamily->id]);
+        }
     }
 
 }

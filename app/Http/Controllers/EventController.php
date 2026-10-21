@@ -40,6 +40,7 @@ class EventController extends Controller implements HasMiddleware
         try{
             $events = $this->eventRepository->getAll(
                 $request->search,
+                $request->status,
                 $request->limit,
                 true
             );
@@ -55,12 +56,14 @@ class EventController extends Controller implements HasMiddleware
     {
         $request = $request->validate([
             'search' => 'nullable|string',
+            'status' => 'nullable|string',
             'row_per_page' => 'required|integer'
         ]);
 
         try{
             $events = $this->eventRepository->getAllPaginated(
                 $request['search'] ?? null,
+                $request['status'] ?? null,
                 $request['row_per_page'],
             );
 

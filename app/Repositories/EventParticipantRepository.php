@@ -48,6 +48,7 @@ class EventParticipantRepository implements EventParticipantRepositoryInterface
         // Implementation of the getAllPaginated method
         $query = $this->getAll(
             $search, 
+            $status,
             $rowPerPage, 
             false
         );
@@ -78,8 +79,28 @@ class EventParticipantRepository implements EventParticipantRepositoryInterface
             $eventParticipant->quantity = $data['quantity'];
             $eventParticipant->total_price = $event->price * $data['quantity'];
             $eventParticipant->payment_status = 'pending';
-
             $eventParticipant->save();
+
+            \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+            \Midtrans\Config::$isProduction = config('midtrans.isProduction');
+            \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
+            \Midtrans\Config::$is3ds = config('midtrans.is3ds');
+
+            $params = array(
+                'transaction_details' => array(
+                    'order_id' => $eventParticipant->id,
+                    'gross_amount' => $eventParticipant->total_price,
+                ),
+                'customer_details' => array(
+                    'first_name' => auth()->user()->name,
+                ),
+            );
+
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+            $eventParticipant->snap_token = $snapToken;
+            $eventParticipant->save();
+
             DB::commit();
 
             return $eventParticipant;

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Override;
 
 class EventParticipantStoreRequest extends FormRequest
@@ -43,5 +44,14 @@ class EventParticipantStoreRequest extends FormRequest
             'quantity.required' => 'Jumlah Peserta wajib diisi.',
             'quantity.integer' => 'Jumlah Peserta harus berupa angka.',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $user = Auth::user();
+
+        if ($user->hasRole('head-of-family')) {
+            $this->merge(['head_of_family_id' => $user->headOfFamily->id]);
+        }
     }
 }
