@@ -3,12 +3,32 @@
 namespace App\Repositories;
 
 use App\Helpers\ResponseHelper;
+use App\Models\User;
 use App\Http\Resources\HeadOfFamilyResource;
 use App\Interfaces\AuthRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
 class AuthRepository implements AuthRepositoryInterface
 {
+    public function register(array $data)
+    {
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ]);
+
+        $user->assignRole('head-of-family');
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return [
+            'user' => $user,
+            'token' => $token,
+            'message' => 'Register Success!'
+        ];
+    }
+
     public function login(array $data)
     {if (!Auth::guard('web')->attempt($data)) {
         throw new \Exception('Unauthorized');
@@ -38,12 +58,7 @@ class AuthRepository implements AuthRepositoryInterface
             $user->currentAccessToken()->delete();
         }
 
-        $response = [
-            'success' => true,
-            'message' => 'Logout Success!'
-        ];
-
-        return response($response, 200);
+        return true;
     }
 
     public function me()
@@ -51,12 +66,12 @@ class AuthRepository implements AuthRepositoryInterface
         $user = Auth::guard('sanctum')->user() ?? Auth::user();
 
         if ($user) {
-            $user->load('roles.permissions');
+            $user->load('roles.permissions', 'headOfFamily');
 
             $permissions = $user->getAllPermissions()->pluck('name');
             $role = $user->roles->first()?->name;
 
-            return response()->json([
+            return [
                 'message' => 'User Data',
                 'data' => [
                     'id' => $user->id,
@@ -66,11 +81,9 @@ class AuthRepository implements AuthRepositoryInterface
                     'role' => $role,
                     'head_of_family' => $user->headOfFamily ? new HeadOfFamilyResource($user->headOfFamily) : null
                 ],
-            ]);
+            ];
         }
         
-        return response()->json([
-            'message' => 'You are not logged in!'
-        ], 401);
+        return null;
     }
 }

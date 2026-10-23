@@ -11,8 +11,8 @@ class FamilyMember extends Model
     use SoftDeletes, UUID;
 
     protected $fillable = [
+        'user_id',
         'head_of_family_id',
-        'name',
         'profile_picture',
         'identity_number',
         'gender',

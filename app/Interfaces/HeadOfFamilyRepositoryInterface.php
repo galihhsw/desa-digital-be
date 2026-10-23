@@ -2,7 +2,7 @@
 
 namespace App\Interfaces;
 
-interface headOfFamilyRepositoryInterface
+interface HeadOfFamilyRepositoryInterface
 {
      public function getAll(
         ?string $search,

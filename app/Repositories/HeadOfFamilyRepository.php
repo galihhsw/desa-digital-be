@@ -2,21 +2,21 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\headOfFamilyRepositoryInterface;
+use App\Interfaces\HeadOfFamilyRepositoryInterface;
 use App\Models\HeadOfFamily;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Override;
 
-class HeadOfFamilyRepository implements headOfFamilyRepositoryInterface
+class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
 {
     public function getAll(
         ?string $search, 
         ?int $limit, 
         bool $execute
     ){
-        $query = HeadOfFamily::where(function ($query) use ($search) {
+        $query = HeadOfFamily::with(['user', 'familyMembers.user'])->where(function ($query) use ($search) {
             if ($search){
                 // if $search --> will search by defined column in  model
                 $query->search($search);
@@ -57,7 +57,7 @@ class HeadOfFamilyRepository implements headOfFamilyRepositoryInterface
     public function getById(
         string $id
     ){
-        $query = HeadOfFamily::where('id', $id);
+        $query = HeadOfFamily::where('id', $id)->with(['user', 'familyMembers.user']);
         
         return $query->first();   
     }
@@ -123,11 +123,16 @@ class HeadOfFamilyRepository implements headOfFamilyRepositoryInterface
 
             $userRepository = new UserRepository; 
 
-            $userRepository->update($headOfFamily->user_id, [
+            $userData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => isset($data['password']) ? bcrypt($data['password']) : $headOfFamily->user->password
-            ]);
+            ];
+
+            if(!empty($data['password'])) {
+                $userData['password'] = $data['password'];
+            }
+
+            $userRepository->update($headOfFamily->user_id, $userData);
 
             DB::commit();
             return $headOfFamily;
