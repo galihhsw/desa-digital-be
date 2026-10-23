@@ -1,12 +1,13 @@
 <?php
 
-namespace App\repositories;
+namespace App\Repositories;
 
 use App\Interfaces\DevelopmentRepositoryInterface;
 use App\Models\Development;
 use App\Models\FamilyMember;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DevelopmentRepository implements DevelopmentRepositoryInterface
 {
@@ -77,9 +78,8 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
         DB::beginTransaction();
 
         try{
-
             $development = new Development();
-            $development->thumbnail = $data['thumbnail']->store('assets/development', 'public');
+            $development->thumbnail = $data['thumbnail']->store('assets/developments', 'public');
             $development->name = $data['name'];
             $development->description = $data['description'];
             $development->person_in_charge = $data['person_in_charge'];
@@ -110,6 +110,9 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
             $development = Development::find($id);
 
             if(isset($data['thumbnail'])) {
+                if ($development->thumbnail && Storage::disk('public')->exists($development->thumbnail)) {
+                    Storage::disk('public')->delete($development->thumbnail);
+                }
                 $development->thumbnail = $data['thumbnail']->store('assets/developments', 'public');
             }
         
@@ -120,7 +123,9 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
             $development->end_date = $data['end_date'];
             $development->status = $data['status'];
 
-            
+            if(isset($data['person_in_charge'])) {
+                $development->person_in_charge = $data['person_in_charge'];
+            }
 
             $development->save();
             DB::commit();
@@ -141,6 +146,9 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
         
         try{
             $development = Development::find($id);
+            if ($development->thumbnail && Storage::disk('public')->exists($development->thumbnail)) {
+                Storage::disk('public')->delete($development->thumbnail);
+            }
             $development->delete();
 
             DB::commit();

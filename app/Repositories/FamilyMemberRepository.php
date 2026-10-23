@@ -7,6 +7,7 @@ use App\Models\FamilyMember;
 use App\Models\HeadOfFamily;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class FamilyMemberRepository implements FamilyMemberRepositoryInterface
 {
@@ -15,7 +16,7 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
         ?int $limit, 
         bool $execute
     ){
-        $query = FamilyMember::where(function ($query) use ($search) {
+        $query = FamilyMember::with(['user', 'headOfFamily'])->where(function ($query) use ($search) {
             if ($search){
                 // if $search --> will search by defined column in  model
                 $query->search($search);
@@ -79,7 +80,7 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
             $familyMember = new FamilyMember;
             $familyMember->user_id = $user->id;
             $familyMember->head_of_family_id = $data['head_of_family_id'];
-            $familyMember->profile_picture = $data['profile_picture']->store('assets/family_members', 'public');
+            $familyMember->profile_picture = $data['profile_picture']->store('assets/family-members', 'public');
             $familyMember->identity_number = $data['identity_number'];
             $familyMember->gender = $data['gender'];
             $familyMember->date_of_birth = $data['date_of_birth'];
@@ -110,6 +111,9 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
             $familyMember = FamilyMember::find($id);
 
             if(isset($data['profile_picture'])){
+                if ($familyMember->profile_picture && Storage::disk('public')->exists($familyMember->profile_picture)) {
+                    Storage::disk('public')->delete($familyMember->profile_picture);
+                }
                 $familyMember->profile_picture = $data['profile_picture']->store('assets/family-members', 'public');   
             }
 
@@ -120,15 +124,24 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
             $familyMember->occupation = $data['occupation'];
             $familyMember->marital_status = $data['marital_status'];
 
+            if(isset($data['relation'])) {
+                $familyMember->relation = $data['relation'];
+            }
+
             $familyMember->save();
 
             $userRepository = new UserRepository; 
 
-            $userRepository->update($familyMember->user_id, [
+            $userData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => isset($data['password']) ? bcrypt($data['password']) : $familyMember->user->password
-            ]);
+            ];
+
+            if(!empty($data['password'])) {
+                $userData['password'] = $data['password'];
+            }
+
+            $userRepository->update($familyMember->user_id, $userData);
 
             DB::commit();
             return $familyMember;
@@ -147,6 +160,9 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
         
         try{
             $familyMember = FamilyMember::find($id);
+            if ($familyMember->profile_picture && Storage::disk('public')->exists($familyMember->profile_picture)) {
+                Storage::disk('public')->delete($familyMember->profile_picture);
+            }
             $familyMember->delete();
 
             DB::commit();
@@ -157,5 +173,4 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
             throw new Exception($e->getMessage());
         }
     }
-
 }

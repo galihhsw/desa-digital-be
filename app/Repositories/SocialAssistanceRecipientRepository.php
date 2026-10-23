@@ -14,7 +14,7 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
         ?int $limit, 
         bool $execute
     ){
-        $query = SocialAssistanceRecipient::where(function ($query) use ($search) {
+        $query = SocialAssistanceRecipient::with(['socialAssistance', 'headOfFamily.user'])->where(function ($query) use ($search) {
             if ($search){
                 // if $search --> will search by defined column in  model
                 $query->search($search);
@@ -59,7 +59,7 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
     public function getById(
         string $id
     ){
-        $query = SocialAssistanceRecipient::where('id', $id);
+        $query = SocialAssistanceRecipient::where('id', $id)->with(['socialAssistance', 'headOfFamily.user']);
         
         return $query->first();   
     }
@@ -128,7 +128,7 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
             }
 
             if(isset($data['status'])) {
-                $socialAssistanceRecipient->status = $data['status']->store('assets/social-assistance-recipient', 'public');
+                $socialAssistanceRecipient->status = $data['status'];
             }
 
             $socialAssistanceRecipient->save();

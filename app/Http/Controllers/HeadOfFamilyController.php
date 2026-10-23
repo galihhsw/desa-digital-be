@@ -7,7 +7,7 @@ use App\Http\Requests\HeadOfFamilyStoreRequest;
 use App\Http\Requests\HeadOfFamilyUpdateRequest;
 use App\Http\Resources\HeadOfFamilyResource;
 use App\Http\Resources\PaginateResource;
-use App\Interfaces\headOfFamilyRepositoryInterface;
+use App\Interfaces\HeadOfFamilyRepositoryInterface;
 use App\Models\HeadOfFamily;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,8 +17,7 @@ use Spatie\Permission\Middleware\PermissionMiddleware;
 
 class HeadOfFamilyController extends Controller implements HasMiddleware
 {
-
-    private headOfFamilyRepositoryInterface $headOfFamilyRepository;
+    private HeadOfFamilyRepositoryInterface $headOfFamilyRepository;
 
     public function __construct(HeadOfFamilyRepositoryInterface $headOfFamilyRepository) {
         $this->headOfFamilyRepository = $headOfFamilyRepository;
@@ -39,7 +38,7 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $headOfFamilies = $this->headOfFamilyRepository->getAll(
                 $request->search,
                 $request->limit,
@@ -48,9 +47,8 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
 
             return ResponseHelper::jsonResponse(true, 'Head Of Family Data retrieve successfully!', HeadOfFamilyResource::collection($headOfFamilies), 200);
         } catch (\Exception $e) {
-            //return ResponseHelper::jsonResponse(true, 'Head Of Family Data not found!', null, 500);
             return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
-        };
+        }
     }
 
     public function getAllPaginated(Request $request) 
@@ -60,7 +58,7 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
             'row_per_page' => 'required|integer'
         ]);
 
-        try{
+        try {
             $headOfFamilies = $this->headOfFamilyRepository->getAllPaginated(
                 $request['search'] ?? null,
                 $request['row_per_page'],
@@ -68,8 +66,8 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
 
             return ResponseHelper::jsonResponse(true, 'Head Of Family Data retrieve successfully!', PaginateResource::make($headOfFamilies, HeadOfFamilyResource::class), 200);
         } catch (\Exception $e) {
-            return ResponseHelper::jsonResponse(true, 'Head Of Family Data not found!', null, 500);
-        };
+            return ResponseHelper::jsonResponse(false, 'Head Of Family Data not found!', null, 500);
+        }
     }
 
     /**
@@ -77,9 +75,9 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
      */
     public function store(HeadOfFamilyStoreRequest $request)
     {
-         $request = $request->validated();
+        $request = $request->validated();
 
-        try{
+        try {
             $headOfFamily = $this->headOfFamilyRepository->create($request);
 
             return ResponseHelper::jsonResponse(true, 'Head Of Family data added successfully', new HeadOfFamilyResource($headOfFamily), 201);
@@ -93,12 +91,12 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
      */
     public function show(string $id)
     {
-        try{
+        try {
             $headOfFamily = $this->headOfFamilyRepository->getById(
                 $id
             );
 
-            if(!$headOfFamily){
+            if (!$headOfFamily) {
                 return ResponseHelper::jsonResponse(false, 'Head Of Family data not found', null, 404);
             }
 
@@ -115,12 +113,12 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
     {
         $request = $request->validated();
 
-        try{
+        try {
             $headOfFamily = $this->headOfFamilyRepository->getById(
                 $id
             );
 
-            if(!$headOfFamily){
+            if (!$headOfFamily) {
                 return ResponseHelper::jsonResponse(false, 'Head Of Family not found', null, 404);
             }
 
@@ -140,12 +138,12 @@ class HeadOfFamilyController extends Controller implements HasMiddleware
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             $headOfFamily = $this->headOfFamilyRepository->getById(
                 $id
             );
 
-            if(!$headOfFamily){
+            if (!$headOfFamily) {
                 return ResponseHelper::jsonResponse(false, 'Head Of Family not found', null, 404);
             }
 

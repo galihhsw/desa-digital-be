@@ -11,17 +11,21 @@ use Illuminate\Support\Facades\DB;
 class EventParticipantRepository implements EventParticipantRepositoryInterface
 {
     public function getAll(
+        ?string $search,
         ?string $status,
-        ?string $search, 
         ?int $limit, 
         bool $execute
     ){
-        $query = EventParticipant::where(function ($query) use ($search) {
+        $query = EventParticipant::with(['event', 'headOfFamily.user'])->where(function ($query) use ($search) {
             if ($search){
                 // if $search --> will search by defined column in  model
                 $query->search($search);
             }
         });
+
+        if ($status) {
+            $query->where('payment_status', $status);
+        }
 
         $query->orderBy('created_at', 'desc'); 
 
@@ -61,7 +65,7 @@ class EventParticipantRepository implements EventParticipantRepositoryInterface
     public function getById(
         string $id
     ){
-        $query = EventParticipant::where('id', $id);
+        $query = EventParticipant::where('id', $id)->with(['event', 'headOfFamily.user']);
         
         return $query->first();   
     }

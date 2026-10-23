@@ -12,12 +12,9 @@ use App\Http\Resources\PaginateResource;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
-use PhpParser\Node\Stmt\TryCatch;
-
 
 class FamilyMemberController extends Controller implements HasMiddleware
 {
-
     private FamilyMemberRepositoryInterface $familyMemberRepository;
 
     public function __construct(FamilyMemberRepositoryInterface $familyMemberRepository) {
@@ -33,12 +30,13 @@ class FamilyMemberController extends Controller implements HasMiddleware
             new Middleware(PermissionMiddleware::using(['family-member-delete']), only : ['destroy']),
         ];
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $familyMembers = $this->familyMemberRepository->getAll(
                 $request->search,
                 $request->limit,
@@ -47,9 +45,8 @@ class FamilyMemberController extends Controller implements HasMiddleware
 
             return ResponseHelper::jsonResponse(true, 'Family Member Data retrieve successfully!', FamilyMemberResource::collection($familyMembers), 200);
         } catch (\Exception $e) {
-            //return ResponseHelper::jsonResponse(true, 'Head Of Family Data not found!', null, 500);
             return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
-        };         
+        }
     }
 
     public function getAllPaginated(Request $request) 
@@ -59,7 +56,7 @@ class FamilyMemberController extends Controller implements HasMiddleware
             'row_per_page' => 'required|integer'
         ]);
 
-        try{
+        try {
             $familyMembers = $this->familyMemberRepository->getAllPaginated(
                 $request['search'] ?? null,
                 $request['row_per_page'],
@@ -67,8 +64,8 @@ class FamilyMemberController extends Controller implements HasMiddleware
 
             return ResponseHelper::jsonResponse(true, 'Family Member Data retrieve successfully!', PaginateResource::make($familyMembers, FamilyMemberResource::class), 200);
         } catch (\Exception $e) {
-            return ResponseHelper::jsonResponse(true, 'Family Member Data not found!', null, 500);
-        };
+            return ResponseHelper::jsonResponse(false, 'Family Member Data not found!', null, 500);
+        }
     }
 
     /**
@@ -78,7 +75,7 @@ class FamilyMemberController extends Controller implements HasMiddleware
     {
         $request = $request->validated();
 
-        try{
+        try {
             $familyMember = $this->familyMemberRepository->create($request);
 
             return ResponseHelper::jsonResponse(true, 'Family Member data added successfully', new FamilyMemberResource($familyMember), 201);
@@ -92,12 +89,12 @@ class FamilyMemberController extends Controller implements HasMiddleware
      */
     public function show(string $id)
     {
-        try{
+        try {
             $familyMember = $this->familyMemberRepository->getById(
                 $id
             );
 
-            if(!$familyMember){
+            if (!$familyMember) {
                 return ResponseHelper::jsonResponse(false, 'Family Member data not found', null, 404);
             }
 
@@ -114,12 +111,12 @@ class FamilyMemberController extends Controller implements HasMiddleware
     {
         $request = $request->validated();
 
-        try{
+        try {
             $familyMember = $this->familyMemberRepository->getById(
                 $id
             );
 
-            if(!$familyMember){
+            if (!$familyMember) {
                 return ResponseHelper::jsonResponse(false, 'Family Member not found', null, 404);
             }
 
@@ -139,12 +136,12 @@ class FamilyMemberController extends Controller implements HasMiddleware
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             $familyMember = $this->familyMemberRepository->getById(
                 $id
             );
 
-            if(!$familyMember){
+            if (!$familyMember) {
                 return ResponseHelper::jsonResponse(false, 'Family Member not found', null, 404);
             }
 
@@ -157,5 +154,4 @@ class FamilyMemberController extends Controller implements HasMiddleware
             return ResponseHelper::jsonResponse(false, $e->getMessage(), null, 500);
         }
     }
-    
 }
